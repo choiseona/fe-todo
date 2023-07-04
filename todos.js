@@ -26,6 +26,10 @@ const statusId = {
     done: [],
 }
 
+function currentStatus() {
+    console.log(`현재상태 : todo: ${statusId.todo.length}개, doing: ${statusId.doing.length}개, done: ${statusId.done.length}개`);
+}
+
 todos.forEach((todo) => {
     if(todo.status == 'todo'){
         statusId.todo.push(todo.id);
@@ -38,10 +42,43 @@ todos.forEach((todo) => {
     }
 })
 
-while(1){
-    rl.question('명령하세요 : ', (answer) => {
-        const input = answer.split('$');
-        rl.close();
-        
-    })
+let flag = true
+let f = 1
+function simulte() {
+    
+        rl.question('명령하세요 : ', (answer) => {
+            const input = answer.split('$');
+                
+            rl.close();
+            switch(input[0]) {
+                case 'exit' :
+                    f = 0;
+                case 'show' :
+                    if (input[1] == 'all') {
+                        currentStatus();
+                    }
+                    break;
+                case 'add' :
+                    break;            
+                case 'delete' :
+                    break;
+                case 'update' :
+                    break;
+            }
+        })
+        if (f == 0) {
+            return false;
+        }
+        else {
+            return true;
+        }
+     
+
+    
+}
+while(flag){
+    let a = simulte();
+    if (a == false){
+        break;
+    }
 }
