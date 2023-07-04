@@ -1,4 +1,5 @@
 const readline = require('readline');
+const { json } = require('stream/consumers');
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -42,6 +43,19 @@ function showStatusList(status) {
     console.log(`${status}리스트 : 총${statusId[status].length}건 : `, elemStr);
 }
 
+function addTodo(addedName, addedTags) {
+    curId++;
+    statusId.todo.push(curId);
+    todos.push({
+        name: `${addedName}`,
+        tags: addedTags,
+        status: 'todo',
+        id: curId,
+    });
+    console.log(`${addedName} 1개가 추가됐습니다. (id : ${curId})`);
+    currentStatus();
+}
+
 todos.forEach((todo) => {
     if(todo.status == 'todo'){
         statusId.todo.push(todo.id);
@@ -73,6 +87,9 @@ rl.on('line', (answer) => {
             }
             break;
         case "add":
+            const addedName = input[1];
+            const addedTags = JSON.parse(`${input[2]}`);
+            addTodo(addedName, addedTags);
             break;
         case "delete":
             break;
