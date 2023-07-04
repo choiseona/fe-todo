@@ -77,6 +77,26 @@ function deleteTodo(deletedId) {
     currentStatus();
 }
 
+function updateTodo(updatedId, updatedStatus){
+    let updatedName, originStatus;
+    todos.forEach((element) => {
+        if (updatedId === element.id) {
+            originStatus = element.status;
+            element.status = updatedStatus;
+            updatedName = element.name;
+        }
+    })
+
+    const fromArr = statusId[originStatus].filter((element) => {
+        return element !== updatedId;
+    })
+    statusId[originStatus] = [...fromArr];
+    statusId[updatedStatus].push(updatedId);
+
+    console.log(`${updatedName} ${updatedStatus}으로 상태가 변경됐습니다`);
+    currentStatus();
+}
+
 todos.forEach((todo) => {
     if(todo.status === 'todo'){
         statusId.todo.push(todo.id);
@@ -117,6 +137,9 @@ rl.on('line', (answer) => {
             deleteTodo(deletedId);
             break;
         case "update":
+            const updatedId = parseInt(input[1]);
+            const updatedStatus = input[2];
+            updateTodo(updatedId, updatedStatus);
             break;
     }
     rl.prompt();
