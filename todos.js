@@ -33,7 +33,7 @@ function currentStatus() {
 
 function showStatusList(status) {
     const statusArr = todos.filter(element => {
-        return status == element.status
+        return status === element.status
     })
     const elemArr = [];
     statusArr.forEach((element) => {
@@ -56,14 +56,35 @@ function addTodo(addedName, addedTags) {
     currentStatus();
 }
 
+function deleteTodo(deletedId) {
+    let deleteName;
+    let deleteStatus;
+    todos.forEach((element) => {
+        if (deletedId === element.id) {
+            deleteName = element.name;
+            deleteStatus = element.status;
+            todos.splice(element, 1);
+        }
+    })
+
+    const deletedArr = statusId[deleteStatus].filter((element) => {
+        return element !== deletedId;
+    })
+
+    statusId[deleteStatus] = [...deletedArr];
+
+    console.log(`${deleteName} ${deleteStatus}가 목록에서 삭제됐습니다`);
+    currentStatus();
+}
+
 todos.forEach((todo) => {
-    if(todo.status == 'todo'){
+    if(todo.status === 'todo'){
         statusId.todo.push(todo.id);
     }
-    else if(todo.status == 'doing'){
+    else if(todo.status === 'doing'){
         statusId.doing.push(todo.id);
     }
-    else if(todo.status == 'done'){
+    else if(todo.status === 'done'){
         statusId.done.push(todo.id);
     }
 })
@@ -71,7 +92,7 @@ todos.forEach((todo) => {
 rl.setPrompt("명령하세요 : ");
 rl.prompt();
 rl.on('line', (answer) => {
-    if(answer == 'exit'){
+    if(answer === 'exit'){
         rl.close();
         process.exit();
     }
@@ -79,10 +100,10 @@ rl.on('line', (answer) => {
                 
     switch (input[0]) {
         case "show":
-            if (input[1] == "all") {
+            if (input[1] === "all") {
                 currentStatus();
             }
-            else if(input[1] == "todo" || input[1] == "doing" || input[1] == "done"){
+            else if(input[1] === "todo" || input[1] === "doing" || input[1] === "done"){
                 showStatusList(input[1]);
             }
             break;
@@ -92,6 +113,8 @@ rl.on('line', (answer) => {
             addTodo(addedName, addedTags);
             break;
         case "delete":
+            const deletedId = parseInt(input[1]);
+            deleteTodo(deletedId);
             break;
         case "update":
             break;
