@@ -77,7 +77,7 @@ function deleteTodo(deletedId) {
     currentStatus();
 }
 
-function updateTodo(updatedId, updatedStatus){
+function updateTodo(updatedId, updatedStatus) {
     let updatedName, originStatus;
     todos.forEach((element) => {
         if (updatedId === element.id) {
@@ -97,14 +97,26 @@ function updateTodo(updatedId, updatedStatus){
     currentStatus();
 }
 
+let nonExitFlag = 1;
+function nonExistId(inputId) {
+    todos.forEach((elem) => {
+        if (elem.id === inputId) {
+            nonExitFlag = 0;
+        }
+    });
+    if (nonExitFlag){
+        return true;
+    }  
+}
+
 todos.forEach((todo) => {
-    if(todo.status === 'todo'){
+    if (todo.status === 'todo') {
         statusId.todo.push(todo.id);
     }
-    else if(todo.status === 'doing'){
+    else if (todo.status === 'doing') {
         statusId.doing.push(todo.id);
     }
-    else if(todo.status === 'done'){
+    else if (todo.status === 'done') {
         statusId.done.push(todo.id);
     }
 })
@@ -112,31 +124,67 @@ todos.forEach((todo) => {
 rl.setPrompt("명령하세요 : ");
 rl.prompt();
 rl.on('line', (answer) => {
-    if(answer === 'exit'){
+    let input = answer.split('$');
+
+    if (input[0] !== 'show' && input[0] !== 'add' && input[0] !== 'delete' && input[0] !== 'update' && input[0] !== 'exit') {
+        console.log('show, add, delete, update, exit 명령어를 사용해주세요');
+    }
+
+    if (answer === 'exit') {
         rl.close();
         process.exit();
     }
-    let input = answer.split('$');
-                
+
     switch (input[0]) {
         case "show":
+            if (input[1] !== "todo" && input[1] !== "doing" && input[1] !== "done" && input[1] !== "all") {
+                console.log('show$<all, todo, doing, done 중 하나>를 입력해주세요.');
+            }
             if (input[1] === "all") {
                 currentStatus();
             }
-            else if(input[1] === "todo" || input[1] === "doing" || input[1] === "done"){
+            else if (input[1] === "todo" || input[1] === "doing" || input[1] === "done") {
                 showStatusList(input[1]);
             }
             break;
         case "add":
+            if(!input[1] && !input[2]) {
+                console.log('add$<todoName>$<["tag"]>형식을 맞춰 입력해주세요.');
+                break;
+            }
+            if(input[2][0] !== '[' || input[2][1]!== '"' || input[2][input[2].length-1] !== ']' || input[2][input[2].length-2] !== '"') {
+                console.log('태그의 형식을 ["<tag>"]로 맞춰주세요.')
+                break;
+            }
+
             const addedName = input[1];
             const addedTags = JSON.parse(`${input[2]}`);
             addTodo(addedName, addedTags);
+            
             break;
+
         case "delete":
+            if(!input[1]){
+                console.log('delete$<id> 형식을 맞춰 입력해주세요.');
+                break;
+            }
+            if (nonExistId(parseInt(input[1]))) {
+                console.log('요청하신 id가 todos 리스트에 없습니다.');
+                break;
+            }    
             const deletedId = parseInt(input[1]);
             deleteTodo(deletedId);
             break;
+
         case "update":
+            if ((!(input[1] || input[2])) || (input[2] !== 'todo' && input[2] !== 'doing' && input[2] !== 'done')) {
+                console.log('update$<id>$<todo,doing,done 중 하나>를 입력해주세요');
+                break;
+            }
+            if (nonExistId(parseInt(input[1]))){
+                console.log('요청하신 id가 todos 리스트에 없습니다.');
+                break;
+            }
             const updatedId = parseInt(input[1]);
             const updatedStatus = input[2];
             updateTodo(updatedId, updatedStatus);
@@ -146,7 +194,7 @@ rl.on('line', (answer) => {
 })
 
 
-       
-     
 
-    
+
+
+
