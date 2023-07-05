@@ -1,5 +1,4 @@
 const readline = require('readline');
-const { json } = require('stream/consumers');
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -139,6 +138,7 @@ rl.on('line', (answer) => {
         case "show":
             if (input[1] !== "todo" && input[1] !== "doing" && input[1] !== "done" && input[1] !== "all") {
                 console.log('show$<all, todo, doing, done 중 하나>를 입력해주세요.');
+                break;
             }
             if (input[1] === "all") {
                 currentStatus();
